@@ -1,18 +1,21 @@
 package main
 
 import (
-	"app/bcrypt"
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/xwb1989/sqlparser"
-	"gopkg.in/alecthomas/kingpin.v2"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/mtsmfm/vanir/bcrypt"
+
+	"github.com/xwb1989/sqlparser"
+	"gopkg.in/alecthomas/kingpin.v2"
+	"gopkg.in/yaml.v2"
 )
 
 var version string
@@ -41,6 +44,20 @@ func (v TemplateValue) First(n int) string {
 	}
 
 	return string(rawRune[0:n])
+}
+
+func (v TemplateValue) RandInt(n int) string {
+	var maxLength int = n*10 - 1
+	return fmt.Sprintf("%08d", rand.Intn(maxLength))
+}
+
+func (v TemplateValue) RandString(n int) string {
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
 }
 
 func (v TemplateValue) Last(n int) string {

@@ -13,6 +13,10 @@ Vanir is a database masking tool.
     $ cat masked.sql
     insert into users(name, email) values ('AAA', 'mtsmfm.hr9FYQ5ZbHCEonO9ucjozR6DhBzyPwW.com@example.com');
 
+## Requirement for local development/build
+    ```
+    go get github.com/xwb1989/sqlparser@a9cdf22bd561e715bba34ee228cb1c06bfa2719c
+    ```
 ## Usage
 
 1. Write config file:
@@ -33,13 +37,15 @@ At this time, vanir can mask SQL dumped with `--complete-insert` option only.
 
 You can use [Go templates](https://golang.org/pkg/text/template/) to format output.
 
-| Function | Configuration              | Input            | Output                                      |
-|----------|----------------------------|------------------|---------------------------------------------|
-| Hashed   | `{{.Hashed}}@example.com`  | mtsmfm@gmail.com | hr9FYQ5ZbHCEonO9ucjozR6DhBzyPwW@example.com |
-| First(n) | `{{.First 3}}@example.com` | mtsmfm@gmail.com | mts@example.com                             |
-| Last(n)  | `{{.Last 3}}@example.com`  | mtsmfm@gmail.com | com@example.com                             |
-| Raw      | `{{.Raw}}@example.com`     | mtsmfm@gmail.com | mtsmfm@gmail.com@example.com                |
-| Salt     | `{{.Salt}}@example.com`    | mtsmfm@gmail.com | RzXBbxLFGNUzuy1ppryBQu@example.com          |
+| Function     | Configuration                   | Input                 | Output                                      |
+|--------------|---------------------------------|-----------------------|---------------------------------------------|
+| Hashed       | `{{.Hashed}}@example.com`       | mtsmfm@gmail.com      | hr9FYQ5ZbHCEonO9ucjozR6DhBzyPwW@example.com |
+| First(n)     | `{{.First 3}}@example.com`      | mtsmfm@gmail.com      | mts@example.com                             |
+| Last(n)      | `{{.Last 3}}@example.com`       | mtsmfm@gmail.com      | com@example.com                             |
+| Raw          | `{{.Raw}}@example.com`          | mtsmfm@gmail.com      | mtsmfm@gmail.com@example.com                |
+| Salt         | `{{.Salt}}@example.com`         | mtsmfm@gmail.com      | RzXBbxLFGNUzuy1ppryBQu@example.com          |
+| RandInt(n)   | `{{.RandInt 3}}@example.com`    | mtsmfm@gmail.com      | 012@example.com                             |
+| RandString(n)| `{{.RandString 3}}@example.com` | mtsmfm@gmail.com      | abx@example.com                             |
 
 ## Installation
 
