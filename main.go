@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"math/rand"
 	"os"
+	"sort"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -18,6 +21,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var generatedRandInts []int
 var version string
 var commit string
 var config = kingpin.Flag("config", "Path to YAML masking rule config file.").Required().Short('c').String()
@@ -47,8 +51,22 @@ func (v TemplateValue) First(n int) string {
 }
 
 func (v TemplateValue) RandInt(n int) string {
-	var maxLength int = n*10 - 1
-	return fmt.Sprintf("%08d", rand.Intn(maxLength))
+	var gotUnique bool = false
+	var paddingFormat string = fmt.Sprintf("%%0%dd", n)
+	var maxRand int = int(math.Pow(10, float64(n)))
+	var newStrNumb string
+	for !gotUnique {
+		newStrNumb = fmt.Sprintf(paddingFormat, rand.Intn(maxRand))
+		gotUnique = true
+		convNumb, _ := strconv.Atoi(newStrNumb)
+		existingIndex := sort.Search(len(generatedRandInts), func(i int) bool { return generatedRandInts[i] >= convNumb })
+		if existingIndex < len(generatedRandInts) && generatedRandInts[existingIndex] == convNumb {
+			gotUnique = false
+		} else {
+			generatedRandInts = append(generatedRandInts[:existingIndex], append([]int{convNumb}, generatedRandInts[existingIndex:]...)...)
+		}
+	}
+	return newStrNumb
 }
 
 func (v TemplateValue) RandString(n int) string {
